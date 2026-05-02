@@ -1,0 +1,36 @@
+{
+  "name": "interim-assesment-joel-adjei",
+  "version": "1.0.0",
+  "description": "Coinbase clone REST API with authentication and cryptocurrency data endpoints.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node --watch index.js",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Multimedia-and-Web-Design-L300-25-26/interim-assesment-Joel-Adjei.git"
+  },
+  "keywords": [
+    "express",
+    "mongodb",
+    "jwt",
+    "crypto"
+  ],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/Multimedia-and-Web-Design-L300-25-26/interim-assesment-Joel-Adjei/issues"
+  },
+  "homepage": "https://github.com/Multimedia-and-Web-Design-L300-25-26/interim-assesment-Joel-Adjei#readme",
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.19.2"
+  }
+}
