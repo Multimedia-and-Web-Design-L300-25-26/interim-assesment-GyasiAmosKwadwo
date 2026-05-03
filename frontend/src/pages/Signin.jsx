@@ -3,7 +3,7 @@ import Input from "../components/common/Input";
 import Button from "../components/common/Button";
 import { GoPasskeyFill } from "react-icons/go";
 import { BsApple, BsGoogle } from "react-icons/bs";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, replace, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -32,7 +32,7 @@ const Signin = () => {
       setApiError("");
       try {
         await login(values.email, values.password);
-        navigate("/");
+        navigate("/account", { replace: true });
       } catch (err) {
         setApiError(err.message || "Invalid email or password.");
       } finally {

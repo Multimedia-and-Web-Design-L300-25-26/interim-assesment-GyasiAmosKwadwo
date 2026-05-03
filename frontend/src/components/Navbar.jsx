@@ -68,6 +68,8 @@ const Navbar = () => {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
 
+  const initial = (user?.name?.[0] || "U").toUpperCase();
+
   const handleLogout = async () => {
     await logout();
     navigate("/");
@@ -714,17 +716,13 @@ const Navbar = () => {
                   <>
                     <Link
                       to={"/account"}
+                      replace
                       className="hidden md:block text-sm font-medium text-gray-700 truncate max-w-32"
                     >
-                      {user.name}
+                      <div className="size-10 rounded-full bg-blue-700 flex items-center justify-center">
+                        <p className="text-white">{initial}</p>
+                      </div>
                     </Link>
-                    <Button
-                      variant={"secondary"}
-                      className={"hidden md:block"}
-                      onClick={handleLogout}
-                    >
-                      Sign out
-                    </Button>
                   </>
                 ) : (
                   <>
@@ -747,13 +745,16 @@ const Navbar = () => {
             )}
 
             {user ? (
-              <Button
+              <Link
+                to={"/account"}
+                replace
                 variant={"secondary"}
                 className="md:hidden"
-                onClick={handleLogout}
               >
-                Sign out
-              </Button>
+                <div className="size-10 rounded-full bg-blue-700 flex items-center justify-center">
+                  <p className="text-white">{initial}</p>
+                </div>
+              </Link>
             ) : (
               <Button onClick={() => navigate("/signup")} className="md:hidden">
                 Sign up
@@ -1267,9 +1268,11 @@ const Navbar = () => {
                   <BiWorld size={20} className="text-gray-700" />
                 </button>
                 {user ? (
-                  <Button variant="secondary" onClick={handleLogout}>
-                    Sign out ({user.name})
-                  </Button>
+                  <Link to={"/profile"} replace>
+                    <div className="size-10 rounded-full bg-blue-700 flex items-center justify-center">
+                      <p className="text-white">{initial}</p>
+                    </div>
+                  </Link>
                 ) : (
                   <Button
                     variant="secondary"

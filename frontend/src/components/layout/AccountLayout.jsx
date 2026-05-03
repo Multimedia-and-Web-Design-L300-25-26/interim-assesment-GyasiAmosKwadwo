@@ -1,5 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Link, NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
+import {
+  Link,
+  NavLink,
+  Outlet,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 import {
   FaUser,
   FaShieldAlt,
@@ -8,7 +14,7 @@ import {
   FaSignOutAlt,
   FaUserPlus,
 } from "react-icons/fa";
-import { BsQuestionCircle, BsGrid } from "react-icons/bs";
+import { BsQuestionCircle, BsGrid, BsX } from "react-icons/bs";
 import { useAuth } from "@/context/AuthContext";
 import logo from "@/assets/images/coinbaseLogoNav.svg";
 
@@ -25,8 +31,10 @@ const AccountLayout = () => {
   const location = useLocation();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [appsOpen, setAppsOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const dropdownRef = useRef(null);
   const appsRef = useRef(null);
+  const mobileMenuRef = useRef(null);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -35,6 +43,9 @@ const AccountLayout = () => {
       }
       if (appsRef.current && !appsRef.current.contains(e.target)) {
         setAppsOpen(false);
+      }
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(e.target)) {
+        setMobileMenuOpen(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -46,19 +57,40 @@ const AccountLayout = () => {
     navigate("/signin");
   };
 
+  const [darkMode, setDarkMode] = useState(false);
   const initial = (user?.name?.[0] || "U").toUpperCase();
+  const pageTitle = (() => {
+    if (location.pathname === "/account" || location.pathname === "/account/") {
+      return "Account";
+    }
+    const segment = location.pathname.split("/").pop();
+    return segment
+      ? segment.charAt(0).toUpperCase() + segment.slice(1)
+      : "Account";
+  })();
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
       {/* ── Top Navbar ── */}
       <header
-        className={`h-16 fixed w-[calc(100%-208px)] top-0 right-0 bg-white ${location.pathname === "/account/activity" ? "" : "border-b"} border-gray-300 flex items-center justify-between px-5 shrink-0 z-10`}
+        className={`h-16 fixed top-0 left-0 right-0 md:left-auto md:w-[calc(100%-208px)] bg-white ${location.pathname === "/account/activity" ? "" : "border-b"} border-gray-300 flex items-center justify-between px-4 md:px-5 shrink-0 z-10`}
       >
-        <div>
-          <h3 className="text-2xl font-semibold text-gray-900">
-            {location.pathname === "/account/activity" && "Activity"}
-            {location.pathname === "/account/statements" && "Statements"}
-          </h3>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setMobileMenuOpen((o) => !o)}
+            className="md:hidden w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-gray-200 transition-colors"
+            aria-label="Open account menu"
+          >
+            <BsGrid size={18} />
+          </button>
+          <div>
+            <div className="w-10 h-10 lg:hidden rounded-full flex items-center justify-center text-white font-semibold">
+              <img src={logo} alt="logo" />
+            </div>
+            <h3 className="hidden lg:block text-xl md:text-2xl font-semibold text-gray-900">
+              {pageTitle}
+            </h3>
+          </div>
         </div>
 
         {/* Right actions */}
@@ -72,7 +104,7 @@ const AccountLayout = () => {
           </Link>
 
           {/* Apps grid */}
-          <div className="relative" ref={appsRef}>
+          <div className="lg:relative" ref={appsRef}>
             <button
               onClick={() => setAppsOpen((o) => !o)}
               className="w-8 h-8 flex items-center justify-center rounded-full text-gray-500 hover:bg-gray-100 transition-colors"
@@ -82,16 +114,26 @@ const AccountLayout = () => {
 
             {appsOpen && (
               <div
-                className="fixed inset-0 bg-black/10 backdrop-blur-[1px] z-40 transition-opacity cursor-default"
+                className="fixed hidden lg:block inset-0 bg-black/10 backdrop-blur-[1px] z-40 transition-opacity cursor-default"
                 onClick={() => setAppsOpen(false)}
               />
             )}
             {appsOpen && (
-              <div className="absolute right-0 top-10 w-[330px] bg-white rounded-2xl shadow-2xl border border-gray-100 py-6 z-50 max-h-[85vh] overflow-y-auto custom-scrollbar">
+              <div className="absolute right-0 top-0 lg:top-10 h-dvh w-full lg:h-fit lg:w-[330px] bg-white lg:rounded-2xl lg:shadow-2xl border border-gray-100 pb-6 py-6 z-50 lg:max-h-[85vh] overflow-y-auto custom-scrollbar">
+                <div className="flex lg:hidden items-center justify-end gap-3 border-b border-gray-300 px-3 py-1.5">
+                  <button
+                    onClick={() => setAppsOpen(false)}
+                    className="w-10 h-10 rounded-full  flex items-center justify-center text-gray-800 hover:bg-gray-200 transition-colors"
+                    aria-label="Close account menu"
+                  >
+                    <BsX size={34} />
+                  </button>
+                </div>
+
                 <div className="space-y-3">
                   {/* For Individuals */}
                   <section>
-                    <h4 className="text-xs font-bold text-gray-500  mb-2 px-2 uppercase">
+                    <h4 className="text-xs font-bold text-gray-500 pt-2 lg:pt-0  mb-2 px-2 uppercase">
                       For Individuals
                     </h4>
                     <div className="grid grid-cols-3 gap-2">
@@ -270,7 +312,7 @@ const AccountLayout = () => {
           </div>
 
           {/* User avatar + dropdown */}
-          <div className="relative" ref={dropdownRef}>
+          <div className="lg:relative" ref={dropdownRef}>
             <button
               onClick={() => setDropdownOpen((o) => !o)}
               className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm font-semibold hover:opacity-90 transition-opacity"
@@ -279,9 +321,19 @@ const AccountLayout = () => {
             </button>
 
             {dropdownOpen && (
-              <div className="absolute right-0 top-10 w-72 bg-white rounded-xl shadow-lg border border-gray-100 py-2 z-50">
+              <div className="absolute right-0 top-0 lg:top-10 w-full h-dvh lg:h-fit lg:w-72 bg-white rounded-xl shadow-lg border border-gray-100 pb-2 lg:py-2 z-50">
+                <div className="flex lg:hidden items-center justify-end gap-3 border-b border-gray-300 px-3 py-1.5">
+                  <button
+                    onClick={() => setDropdownOpen(false)}
+                    className="w-10 h-10 rounded-full  flex items-center justify-center text-gray-800 hover:bg-gray-200 transition-colors"
+                    aria-label="Close account menu"
+                  >
+                    <BsX size={34} />
+                  </button>
+                </div>
+
                 {/* User info */}
-                <div className="flex items-center gap-3 px-4 py-3 border-b border-gray-100">
+                <div className="flex items-center gap-3 px-4 py-4 border-b border-gray-300">
                   <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-semibold shrink-0">
                     {initial}
                   </div>
@@ -318,10 +370,66 @@ const AccountLayout = () => {
         </div>
       </header>
 
+      {/* Mobile account drawer */}
+      {mobileMenuOpen && (
+        <>
+          <div
+            className="fixed inset-0 z-30 bg-black/20"
+            onClick={() => setMobileMenuOpen(false)}
+          />
+          <div
+            ref={mobileMenuRef}
+            className="fixed h-dvh inset-x-0 top-0 z-40 bg-white border-b border-gray-200 shadow-2xl px-4 py-4 space-y-4 md:hidden"
+          >
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold">
+                  <img src={logo} alt="logo" />
+                </div>
+              </div>
+              <button
+                onClick={() => setMobileMenuOpen(false)}
+                className="w-10 h-10 rounded-full  flex items-center justify-center text-gray-600 hover:bg-gray-200 transition-colors"
+                aria-label="Close account menu"
+              >
+                <BsX size={34} />
+              </button>
+            </div>
+
+            <nav className="space-y-2 px-4">
+              {navItems.map(({ label, to, icon: Icon }) => (
+                <NavLink
+                  key={to}
+                  to={to}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={({ isActive }) =>
+                    `flex items-center gap-3 rounded-2xl px-3 py-3 text-sm font-medium transition-colors ${
+                      isActive
+                        ? "bg-blue-50 text-blue-600"
+                        : "bg-white text-gray-700 hover:bg-gray-50"
+                    }`
+                  }
+                >
+                  <Icon size={18} />
+                  {label}
+                </NavLink>
+              ))}
+            </nav>
+
+            <button
+              onClick={handleLogout}
+              className="flex items-center justify-center gap-2 px-5 mt-8 text-sm font-medium text-red-600 hover:bg-red-100 transition-colors"
+            >
+              Sign out
+            </button>
+          </div>
+        </>
+      )}
+
       {/* ── Body (sidebar + content) ── */}
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
-        <aside className="w-52 p-5 bg-white border-r border-gray-300 flex flex-col shrink-0">
+        <aside className="hidden md:flex w-52 p-5 bg-white border-r border-gray-300 flex-col shrink-0">
           {/* Logo */}
           <div className="flex items-center gap-2.5">
             <div className="w-7 h-7 rounded-full flex items-center justify-center shrink-0">
@@ -352,7 +460,7 @@ const AccountLayout = () => {
         </aside>
 
         {/* Main content */}
-        <main className="flex-1 overflow-y-auto pt-14 bg-white">
+        <main className="flex-1 overflow-y-auto pt-20 md:pt-14 bg-white">
           <Outlet />
         </main>
       </div>

@@ -13,7 +13,9 @@ import CoinbaseLogo from "@/assets/images/coinbase_logo.png";
 import { RiLoader5Line } from "react-icons/ri";
 
 const emailSchema = Yup.object({
-  email: Yup.string().email("Enter a valid email address").required("Email is required"),
+  email: Yup.string()
+    .email("Enter a valid email address")
+    .required("Email is required"),
 });
 
 const passwordSchema = Yup.object({
@@ -27,15 +29,22 @@ const passwordSchema = Yup.object({
 });
 
 const nameSchema = Yup.object({
-  firstName: Yup.string().min(2, "First name must be at least 2 characters").required("First name is required"),
-  lastName: Yup.string().min(2, "Last name must be at least 2 characters").required("Last name is required"),
+  firstName: Yup.string()
+    .min(2, "First name must be at least 2 characters")
+    .required("First name is required"),
+  lastName: Yup.string()
+    .min(2, "Last name must be at least 2 characters")
+    .required("Last name is required"),
 });
 
 const fullSchema = emailSchema.concat(passwordSchema).concat(nameSchema);
 
 const passwordRules = [
   { label: "A minimum of 8 characters", test: (v) => v.length >= 8 },
-  { label: "Uppercase and lowercase letters", test: (v) => /[A-Z]/.test(v) && /[a-z]/.test(v) },
+  {
+    label: "Uppercase and lowercase letters",
+    test: (v) => /[A-Z]/.test(v) && /[a-z]/.test(v),
+  },
   { label: "At least 1 number", test: (v) => /[0-9]/.test(v) },
   { label: "At least 1 symbol", test: (v) => /[^A-Za-z0-9]/.test(v) },
 ];
@@ -58,7 +67,7 @@ const Signup = () => {
       try {
         const fullName = `${values.firstName} ${values.lastName}`;
         await register(fullName, values.email, values.password);
-        navigate("/");
+        navigate("/signin", { replace: true });
       } catch (err) {
         setApiError(err.message || "Registration failed. Please try again.");
       } finally {
@@ -100,12 +109,13 @@ const Signup = () => {
       </button>
 
       <div className="max-w-md lg:pt-36 p-5 h-full md:h-fit flex flex-col justify-evenly mx-auto">
-
         {/* ── Step 1: Email ── */}
         {step === 1 && (
           <>
             <div className="mb-5">
-              <h4 className="text-white py-3 text-3xl font-medium">Create your account</h4>
+              <h4 className="text-white py-3 text-3xl font-medium">
+                Create your account
+              </h4>
               <p className="text-gray-400">
                 Access all that Coinbase has to offer with a single account.
               </p>
@@ -125,7 +135,9 @@ const Signup = () => {
                   {...formik.getFieldProps("email")}
                 />
                 {formik.touched.email && formik.errors.email && (
-                  <p className="mt-1 text-red-400 text-sm">{formik.errors.email}</p>
+                  <p className="mt-1 text-red-400 text-sm">
+                    {formik.errors.email}
+                  </p>
                 )}
               </div>
 
@@ -167,13 +179,16 @@ const Signup = () => {
             <div className="mt-5">
               <p className="text-white font-medium text-center">
                 Already have an account?{" "}
-                <Link to="/signin" className="text-blue-500">Sign in</Link>
+                <Link to="/signin" className="text-blue-500">
+                  Sign in
+                </Link>
               </p>
             </div>
 
             <div className="lg:py-4 mx-auto mt-4">
               <p className="text-xs text-gray-500 text-center px-4">
-                By creating an account you certify that you are over the age of 18 and agree to our{" "}
+                By creating an account you certify that you are over the age of
+                18 and agree to our{" "}
                 <span className="underline">Privacy Policy</span> and{" "}
                 <span className="underline">Cookie Policy.</span>
               </p>
@@ -185,7 +200,9 @@ const Signup = () => {
         {step === 2 && (
           <>
             <div className="mb-5">
-              <h4 className="text-white py-3 text-3xl font-medium">Create a password</h4>
+              <h4 className="text-white py-3 text-3xl font-medium">
+                Create a password
+              </h4>
               <p className="text-gray-400">
                 Protect your account by creating a strong password.
               </p>
@@ -209,11 +226,17 @@ const Signup = () => {
                       onClick={() => setShowPassword((v) => !v)}
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-200"
                     >
-                      {showPassword ? <HiEyeOff size={20} /> : <HiEye size={20} />}
+                      {showPassword ? (
+                        <HiEyeOff size={20} />
+                      ) : (
+                        <HiEye size={20} />
+                      )}
                     </button>
                   </div>
                   {formik.touched.password && formik.errors.password && (
-                    <p className="mt-1 text-red-400 text-sm">{formik.errors.password}</p>
+                    <p className="mt-1 text-red-400 text-sm">
+                      {formik.errors.password}
+                    </p>
                   )}
                 </div>
 
@@ -223,11 +246,23 @@ const Signup = () => {
                     return (
                       <li key={rule.label} className="flex items-center gap-2">
                         {passed ? (
-                          <BsCheckCircleFill size={18} className="text-blue-500 flex-shrink-0" />
+                          <BsCheckCircleFill
+                            size={18}
+                            className="text-blue-500 flex-shrink-0"
+                          />
                         ) : (
-                          <BsCircle size={18} className="text-gray-600 flex-shrink-0" />
+                          <BsCircle
+                            size={18}
+                            className="text-gray-600 flex-shrink-0"
+                          />
                         )}
-                        <span className={passed ? "text-gray-300 text-sm" : "text-gray-500 text-sm"}>
+                        <span
+                          className={
+                            passed
+                              ? "text-gray-300 text-sm"
+                              : "text-gray-500 text-sm"
+                          }
+                        >
                           {rule.label}
                         </span>
                       </li>
@@ -253,9 +288,12 @@ const Signup = () => {
         {step === 3 && (
           <>
             <div className="mb-5">
-              <h4 className="text-white py-3 text-3xl font-medium">What should we call you?</h4>
+              <h4 className="text-white py-3 text-3xl font-medium">
+                What should we call you?
+              </h4>
               <p className="text-gray-400">
-                Enter your first and last name. You can make changes later on by verifying your account.
+                Enter your first and last name. You can make changes later on by
+                verifying your account.
               </p>
             </div>
 
@@ -272,7 +310,9 @@ const Signup = () => {
                     {...formik.getFieldProps("firstName")}
                   />
                   {formik.touched.firstName && formik.errors.firstName && (
-                    <p className="mt-1 text-red-400 text-sm">{formik.errors.firstName}</p>
+                    <p className="mt-1 text-red-400 text-sm">
+                      {formik.errors.firstName}
+                    </p>
                   )}
                 </div>
 
@@ -286,7 +326,9 @@ const Signup = () => {
                     {...formik.getFieldProps("lastName")}
                   />
                   {formik.touched.lastName && formik.errors.lastName && (
-                    <p className="mt-1 text-red-400 text-sm">{formik.errors.lastName}</p>
+                    <p className="mt-1 text-red-400 text-sm">
+                      {formik.errors.lastName}
+                    </p>
                   )}
                 </div>
 
@@ -316,9 +358,13 @@ const Signup = () => {
         <div className="hidden fixed bottom-0 w-full h-20 bg-gray-900 lg:flex items-center justify-center py-2">
           <div className="w-2xl flex justify-center gap-4 items-center">
             <p className="text-white text-sm">
-              We use strictly necessary cookies to enable essential functions, such as security and
-              authentication. For more information, see our
-              <span className="text-blue-500 cursor-pointer"> Cookie Policy</span>.
+              We use strictly necessary cookies to enable essential functions,
+              such as security and authentication. For more information, see our
+              <span className="text-blue-500 cursor-pointer">
+                {" "}
+                Cookie Policy
+              </span>
+              .
             </p>
             <Button onClick={() => setDisplayPolicy(false)}>Dismiss</Button>
           </div>
