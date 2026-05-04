@@ -1,4 +1,11 @@
-const BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const readApiBase = () => {
+  const configured = import.meta.env.VITE_API_URL?.trim();
+  const firstToken = configured?.split(/\s+/)[0];
+  const base = firstToken || "http://localhost:5000";
+  return base.replace(/\/+$/, "");
+};
+
+const BASE = readApiBase();
 
 async function request(path, options = {}) {
   const token = localStorage.getItem("token");
