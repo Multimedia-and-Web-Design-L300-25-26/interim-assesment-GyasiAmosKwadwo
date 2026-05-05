@@ -1,4 +1,4 @@
-# Coinbase Clone — Backend API
+# Coinbase Clone — Backend API - Gyasi Amos Kwadwo
 
 A RESTful API for a Coinbase-inspired cryptocurrency platform. Built with Node.js, Express, and MongoDB. Handles user authentication and cryptocurrency data.
 
@@ -204,3 +204,5 @@ All errors are processed by a global error handler (`src/middleware/errorHandler
   "message": "Human-readable error description"
 }
 ```
+
+

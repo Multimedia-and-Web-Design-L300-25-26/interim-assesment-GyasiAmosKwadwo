@@ -8,10 +8,28 @@ import cryptoRoutes from "./routes/cryptoRoutes.js";
 import errorHandler from "./middleware/errorHandler.js";
 
 const app = express();
+const normalizeOrigin = (origin = "") => origin.trim().replace(/\/+$/, "");
+const configuredOrigins = (
+  process.env.CLIENT_URLS || process.env.CLIENT_URL || "http://localhost:5173"
+)
+  .split(",")
+  .map(normalizeOrigin)
+  .filter(Boolean);
 
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || ["http://localhost:5173", "*"],
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+
+      const normalizedRequestOrigin = normalizeOrigin(origin);
+      const isAllowed = configuredOrigins.includes(normalizedRequestOrigin);
+
+      if (isAllowed) {
+        return callback(null, true);
+      }
+
+      return callback(new Error(`CORS blocked for origin: ${origin}`));
+    },
     credentials: true,
   })
 );
