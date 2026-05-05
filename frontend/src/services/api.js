@@ -1,8 +1,22 @@
+const PROD_FALLBACK_API = "https://interim-assesment-gyasiamoskwadwo.onrender.com";
+const DEV_FALLBACK_API = "http://localhost:5000";
+
+const normalizeCandidate = (value = "") => {
+  const cleaned = value.trim().replace(/^['"`]|['"`]$/g, "");
+  const withoutKey = cleaned.startsWith("VITE_API_URL=")
+    ? cleaned.slice("VITE_API_URL=".length)
+    : cleaned;
+  return withoutKey.trim().replace(/\/+$/, "");
+};
+
 const readApiBase = () => {
-  const configured = import.meta.env.VITE_API_URL?.trim();
-  const firstToken = configured?.split(/\s+/)[0];
-  const base = firstToken || "http://localhost:5000";
-  return base.replace(/\/+$/, "");
+  const raw = import.meta.env.VITE_API_URL || "";
+  const flattened = raw.replace(/\r?\n/g, " ").trim();
+  const matchedUrl = flattened.match(/https?:\/\/[^\s"'`]+/i)?.[0];
+  const firstToken = flattened.split(/\s+/)[0];
+  const candidate = normalizeCandidate(matchedUrl || firstToken);
+  const fallback = import.meta.env.PROD ? PROD_FALLBACK_API : DEV_FALLBACK_API;
+  return candidate || fallback;
 };
 
 const BASE = readApiBase();
